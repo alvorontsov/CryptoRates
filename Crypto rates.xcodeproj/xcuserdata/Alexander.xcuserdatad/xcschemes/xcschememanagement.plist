@@ -9,10 +9,25 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>Crypto ticker.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>2</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
 		<key>113E41101D00B924007E5D82</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>113E41291D00B950007E5D82</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>119AD0801D0F291D0047721B</key>
 		<dict>
 			<key>primary</key>
 			<true/>

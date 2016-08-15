@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="M4Y-Lb-cyx">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <scenes>
+        <!--Today View Controller-->
+        <scene sceneID="cwh-vc-ff4">
+            <objects>
+                <viewController id="M4Y-Lb-cyx" customClass="TodayViewController" customModule="Crypto_ticker" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ft6-oW-KC0"/>
+                        <viewControllerLayoutGuide type="bottom" id="FKl-LY-JtV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="YwQ-lT-zBX">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="wcell" rowHeight="40" id="neV-6a-m4Z" customClass="CurrencyPairTableViewCell" customModule="Crypto_ticker" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="320" height="40"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="neV-6a-m4Z" id="xeD-2x-6Dv">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="39"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="+0,05" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="BbM-wc-79G">
+                                                    <rect key="frame" x="251" y="0.0" width="61" height="39"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="61" id="9yL-94-QAx"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4110.23" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="XI6-m3-2Y9">
+                                                    <rect key="frame" x="165" y="0.0" width="78" height="39"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="78" id="tZj-jo-zIJ"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DASH/USD" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lz0-IE-q6F">
+                                                    <rect key="frame" x="8" y="0.0" width="94" height="39"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="94" id="jc4-Mw-kVy"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="BbM-wc-79G" secondAttribute="bottom" id="Feh-Wa-MW9"/>
+                                                <constraint firstAttribute="bottom" secondItem="lz0-IE-q6F" secondAttribute="bottom" id="X0O-LW-dJD"/>
+                                                <constraint firstAttribute="bottom" secondItem="XI6-m3-2Y9" secondAttribute="bottom" id="Y9i-PI-bra"/>
+                                                <constraint firstItem="XI6-m3-2Y9" firstAttribute="top" secondItem="xeD-2x-6Dv" secondAttribute="top" id="fEY-7z-6rh"/>
+                                                <constraint firstItem="lz0-IE-q6F" firstAttribute="leading" secondItem="xeD-2x-6Dv" secondAttribute="leading" constant="8" id="gQQ-rj-cbC"/>
+                                                <constraint firstAttribute="trailing" secondItem="BbM-wc-79G" secondAttribute="trailing" constant="8" id="mgs-X2-ulV"/>
+                                                <constraint firstItem="lz0-IE-q6F" firstAttribute="top" secondItem="xeD-2x-6Dv" secondAttribute="top" id="qSM-bF-a5G"/>
+                                                <constraint firstItem="BbM-wc-79G" firstAttribute="leading" secondItem="XI6-m3-2Y9" secondAttribute="trailing" constant="8" id="uag-Ms-0Lv"/>
+                                                <constraint firstItem="BbM-wc-79G" firstAttribute="top" secondItem="xeD-2x-6Dv" secondAttribute="top" id="zWe-fo-fGC"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="currencyPairLabel" destination="lz0-IE-q6F" id="KBf-Qx-YJ7"/>
+                                            <outlet property="lastPriceLabel" destination="XI6-m3-2Y9" id="1sW-Mk-9P7"/>
+                                            <outlet property="percentChangeLabel" destination="BbM-wc-79G" id="TFl-7m-8Dp"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="M4Y-Lb-cyx" id="139-qa-GQf"/>
+                                    <outlet property="delegate" destination="M4Y-Lb-cyx" id="ajp-Zh-9Nd"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="YwQ-lT-zBX" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leading" id="Cue-uo-Ole"/>
+                            <constraint firstAttribute="trailing" secondItem="YwQ-lT-zBX" secondAttribute="trailing" id="eZZ-Rl-ZNe"/>
+                            <constraint firstItem="YwQ-lT-zBX" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" id="hsE-Dm-UQP"/>
+                            <constraint firstItem="FKl-LY-JtV" firstAttribute="top" secondItem="YwQ-lT-zBX" secondAttribute="bottom" id="zGK-fo-n91"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="tableView" destination="YwQ-lT-zBX" id="os1-6b-3x4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vXp-U4-Rya" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="700" y="296"/>
+        </scene>
+    </scenes>
+</document>
