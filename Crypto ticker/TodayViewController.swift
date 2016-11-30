@@ -8,16 +8,49 @@
 
 import UIKit
 import NotificationCenter
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
+enum widgetDisplayMode {
+    case compact,expanded
+}
 
 class TodayViewController: UIViewController, NCWidgetProviding , UITableViewDataSource , UITableViewDelegate {
     
     @IBOutlet var tableView : UITableView!
     
     var pairs : [CopyingPair] = []
+    var displayMode : widgetDisplayMode = .compact
     let keys = [ "USDT_BTC",  "USDT_DASH" , "USDT_LTC"  , "USDT_NXT" , "USDT_STR" , "USDT_XMR" , "USDT_XRP" , "USDT_ETH" , "BTC_XEM" , "BTC_LSK" , "BTC_STEEM", "BTC_DAO" , "ETH_DAO" , "ETH_LSK"  ]
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        if #available(iOSApplicationExtension 10.0, *) {
+            self.extensionContext?.widgetLargestAvailableDisplayMode = NCWidgetDisplayMode.expanded
+        } else {
+            // Fallback on earlier versions
+        }
         unarchivePairs()
     }
     
@@ -26,30 +59,36 @@ class TodayViewController: UIViewController, NCWidgetProviding , UITableViewData
         // Dispose of any resources that can be recreated.
     }
     
-    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
+    func widgetPerformUpdate(completionHandler: (@escaping (NCUpdateResult) -> Void)) {
         getRates()
-        completionHandler(NCUpdateResult.NewData)
+        completionHandler(NCUpdateResult.newData)
     }
     
-    func widgetMarginInsetsForProposedMarginInsets(defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
+    func widgetMarginInsets(forProposedMarginInsets defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
         return UIEdgeInsetsMake(10, 50, 10, 10)
     }
     
-     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return pairs.count
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (displayMode == .compact && pairs.count > 3) {
+            return 3
+        }
+        else {
+            return pairs.count
+
+        }
         
     }
     
-     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return self.view.bounds.size.width * 40/400
     }
     
-     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("wcell", forIndexPath: indexPath) as! CurrencyPairTableViewCell
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "wcell", for: indexPath) as! CurrencyPairTableViewCell
         cell.linkPair(pairs[indexPath.row])
         if (indexPath.row == pairs.count - 1) {
             updatePreferredContentSize()
@@ -57,16 +96,30 @@ class TodayViewController: UIViewController, NCWidgetProviding , UITableViewData
         return cell
     }
     
+    @available(iOSApplicationExtension 10.0, *)
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+        if (activeDisplayMode == .compact) {
+            displayMode = .compact
+            self.tableView.reloadData()
+        }
+        else {
+            displayMode = .expanded
+            self.tableView.reloadData()
+        }
+        self.preferredContentSize = (activeDisplayMode == .compact) ? maxSize : CGSize(width: maxSize.width, height: self.view.bounds.size.width * 40 * 11/400 )
+    }
+    
     func getRates() {
         
-        let url = NSURL(string: "https://poloniex.com/public?command=returnTicker")!
-        let request = NSMutableURLRequest(URL: url, cachePolicy: .ReloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30.0)
-        request.HTTPMethod = "GET"
-        let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data , response , error) -> Void in
+        let url = URL(string: "https://poloniex.com/public?command=returnTicker")!
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30.0)
+        request.httpMethod = "GET"
+        
+        let dataTask = URLSession.shared.dataTask(with: request, completionHandler: { (data , response , error) -> Void in
             if ((error == nil)) {
                 var json : NSDictionary!
                 do {
-                    json  = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments) as! NSDictionary
+                    json  = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
                 }
                 catch _ {
                     
@@ -77,17 +130,17 @@ class TodayViewController: UIViewController, NCWidgetProviding , UITableViewData
                     for key in self.keys {
                         
                         
-                        if let pairArray = json.objectForKey(key) as? NSDictionary {
+                        if let pairArray = json.object(forKey: key) as? NSDictionary {
                             
                             print(pairArray)
                             let arr = key.characters.split{$0 == "_"}.map(String.init)
                             let cryptoStr = arr.last!
-                            let lowest = Double(pairArray.objectForKey("lowestAsk") as! String)!
-                            let highest = Double(pairArray.objectForKey("highestBid") as! String)!
-                            let lastPrice = Double(pairArray.objectForKey("last") as! String)!
-                            let percentChange = Double(pairArray.objectForKey("percentChange") as! String)!
+                            let lowest = NSNumber(value: Double(pairArray.object(forKey: "lowestAsk") as! String)!)
+                            let highest = NSNumber(value: Double(pairArray.object(forKey: "highestBid") as! String)!)
+                            let lastPrice = NSNumber(value: Double(pairArray.object(forKey: "last") as! String)!)
+                            let percentChange = NSNumber(value: Double(pairArray.object(forKey: "percentChange") as! String)!)
                             let secondCurrency : String!
-                            let index = self.keys.indexOf(key)
+                            let index = self.keys.index(of: key)
                             if (index < 8) {
                                 secondCurrency = "USD"
                             }
@@ -113,7 +166,7 @@ class TodayViewController: UIViewController, NCWidgetProviding , UITableViewData
         
     }
     
-    func keyMatchesKeyPairs(key : String) -> Bool {
+    func keyMatchesKeyPairs(_ key : String) -> Bool {
         var result = false
         for obj in keys {
             if key == obj {
@@ -128,10 +181,10 @@ class TodayViewController: UIViewController, NCWidgetProviding , UITableViewData
         pairs = []
         let pairsArr = DatabaseManager.sharedAdapter.getPairs()
         for element in pairsArr {
-            let pairToAdd = CopyingPair(pair: element)
+            let pairToAdd = CopyingPair(pair: element!)
             pairs.append(pairToAdd)
         }
-        NSOperationQueue.mainQueue().addOperationWithBlock({
+        OperationQueue.main.addOperation({
             self.tableView.reloadData()
         })
     }

@@ -19,12 +19,12 @@ class CurrencyPairTableViewCell: UITableViewCell {
 
     }
 
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
     }
     
-    func linkPair(pair : CopyingPair) {
+    func linkPair(_ pair : CopyingPair) {
         self.currencyPairLabel.text = pair.getCurrencyPairName()
         if (pair.firstCurrency == "XEM") {
             self.lastPriceLabel.text = String(Double(pair.lastPrice))
@@ -35,11 +35,11 @@ class CurrencyPairTableViewCell: UITableViewCell {
         
         if (pair.percentChange >= 0) {
             self.percentChangeLabel.text = "+" + String(Double(round(pair.percentChange * 1000)/1000))
-            self.percentChangeLabel.textColor = UIColor.greenColor()
+            self.percentChangeLabel.textColor = UIColor.green
         }
         else {
             self.percentChangeLabel.text = String(Double(round(pair.percentChange * 1000)/1000))
-            self.percentChangeLabel.textColor = UIColor.redColor()
+            self.percentChangeLabel.textColor = UIColor.red
         }
     }
     

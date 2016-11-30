@@ -23,29 +23,27 @@ class DatabaseManager: NSObject {
     let model: NSManagedObjectModel
     let context: NSManagedObjectContext
     
-    private override init() {
-        let modelURL = NSBundle.mainBundle()
-            .URLForResource("Model",
+    fileprivate override init() {
+        let modelURL = Bundle.main
+            .url(forResource: "Model",
                             withExtension: "momd")!
         model = NSManagedObjectModel(
-            contentsOfURL: modelURL)!
+            contentsOf: modelURL)!
         
-        let fileManager = NSFileManager.defaultManager()
-        let docsURL: AnyObject? = fileManager.URLsForDirectory(
-            .DocumentDirectory, inDomains: .UserDomainMask).last
-        let storeURL = docsURL!
-            .URLByAppendingPathComponent("Model.sqlite")
-        
+        let fileManager = FileManager.default
+        let docsURL = fileManager.urls(
+            for: .documentDirectory, in: .userDomainMask).last as URL?
+        let storeURL = docsURL!.appendingPathComponent("Model.sqlite")
         coordinator = NSPersistentStoreCoordinator(
             managedObjectModel: model)
         let failureReason = "There was an error creating or loading the application's saved data."
         do {
-            try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: storeURL, options: nil)
+            try coordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: nil)
         } catch {
             // Report any error we got.
             var dict = [String: AnyObject]()
-            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
-            dict[NSLocalizedFailureReasonErrorKey] = failureReason
+            dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data" as AnyObject?
+            dict[NSLocalizedFailureReasonErrorKey] = failureReason as AnyObject?
             
             dict[NSUnderlyingErrorKey] = error as NSError
             let wrappedError = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
@@ -56,7 +54,7 @@ class DatabaseManager: NSObject {
         }
         
         
-        context = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
+        context = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.mainQueueConcurrencyType)
         context.persistentStoreCoordinator = coordinator
         super.init()
     }
@@ -76,12 +74,12 @@ class DatabaseManager: NSObject {
         
     }
     
-    func getPairs()->[Pair!] {
-        let request = NSFetchRequest(entityName: "Pair")
+    func getPairs()->[Pair?] {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Pair")
         request.fetchLimit = 100
-        var result : [Pair!] = []
+        var result : [Pair?] = []
         do {
-            result = try context.executeFetchRequest(request) as! [Pair!]
+            result = try context.fetch(request) as! [Pair?]
         }
         catch _ {
             print("error")
@@ -90,21 +88,21 @@ class DatabaseManager: NSObject {
         return arrayCopy
     }
     
-    func addPair(firstCurrency : String , secondCurrency : String , lastPrice : NSNumber , percentChange : NSNumber , lowest : NSNumber , highest : NSNumber) {
-        let newPair = NSEntityDescription.insertNewObjectForEntityForName("Pair", inManagedObjectContext: context) as! Pair
+    func addPair(_ firstCurrency : String , secondCurrency : String , lastPrice : NSNumber , percentChange : NSNumber , lowest : NSNumber , highest : NSNumber) {
+        let newPair = NSEntityDescription.insertNewObject(forEntityName: "Pair", into: context) as! Pair
         (newPair.firstCurrency , newPair.secondCurrency , newPair.lastPrice , newPair.percentChange , newPair.lowest , newPair.highest) = (firstCurrency , secondCurrency , lastPrice , percentChange , lowest , highest)
         save()
     }
     
     func deletePairs() {
-        let request = NSFetchRequest(entityName: "Pair")
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Pair")
         do {
-            let fetchResults = try context.executeFetchRequest(request) as! [NSManagedObject!]
+            let fetchResults = try context.fetch(request) as! [NSManagedObject?]
             
             
             if let managedObjects = fetchResults as? [NSManagedObject] {
                 for object in managedObjects {
-                    context.deleteObject(object)
+                    context.delete(object)
                 }
             }
             print("Deleting CoreData")

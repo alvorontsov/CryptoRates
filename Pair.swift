@@ -17,7 +17,7 @@ class Pair: NSManagedObject {
         return str
     }
     
-    func set(firstCurrency: String, secondCurrency: String, lastPrice: NSNumber, percentChange: NSNumber , highest: NSNumber , lowest: NSNumber) {
+    func set(_ firstCurrency: String, secondCurrency: String, lastPrice: NSNumber, percentChange: NSNumber , highest: NSNumber , lowest: NSNumber) {
         self.firstCurrency = firstCurrency
         self.secondCurrency = secondCurrency
         self.lastPrice = lastPrice

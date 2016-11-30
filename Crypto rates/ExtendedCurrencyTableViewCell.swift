@@ -21,23 +21,23 @@ class ExtendedCurrencyTableViewCell: UITableViewCell {
         
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
     }
     
-    func linkPair(pair : CopyingPair) {
+    func linkPair(_ pair : CopyingPair) {
             self.currencyPairLabel.text = pair.getCurrencyPairName()
             self.lastPriceLabel.text = String(Double(round(pair.lastPrice!  * 100000000)/100000000))
             self.highestLabel.text = String(Double(round(pair.highest! * 100000000)/100000000))
             self.lowestLabel.text = String(Double(round(pair.lowest! * 100000000)/100000000))
             if (pair.percentChange! >= 0) {
                 self.percentChangeLabel.text = String(Double(round(pair.percentChange! * 1000000)/1000000))
-                self.percentChangeLabel.textColor = UIColor.greenColor()
+                self.percentChangeLabel.textColor = UIColor.green
             }
             else {
                 self.percentChangeLabel.text = String(Double(round(pair.percentChange! * 1000000)/1000000))
-                self.percentChangeLabel.textColor = UIColor.redColor()
+                self.percentChangeLabel.textColor = UIColor.red
             }
     }
 
